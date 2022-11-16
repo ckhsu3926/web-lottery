@@ -15,10 +15,24 @@ interface award {
   winnerList: string[];
 }
 
+interface secret {
+  dialogEnable: boolean;
+  targetMap: Map<string, boolean>;
+}
+
+const secretObject = ref(<secret>{
+  dialogEnable: false,
+  targetMap: new Map<string, boolean>(),
+});
+const onSecretDialogOpen = () => {
+  secretObject.value.dialogEnable = true;
+};
+
 const form = ref(<drawForm>{});
 const reset = () => {
   form.value = <drawForm>{};
   awardList.value = [];
+  secretObject.value.targetMap = new Map<string, boolean>();
 };
 
 const memberList = computed(() => {
@@ -122,7 +136,7 @@ const onReward = (isTest: boolean) => {
       }
 
       // 抽獎
-      const winner = lottery(rewardTargetList);
+      const winner = lottery(rewardTargetList, isTest);
       rewardTargetList = rewardTargetList.filter((r) => r != winner);
       award.winnerList.push(winner || '');
       form.value.reward += `${winner} ${isTest ? '(測試)' : ''}\r`;
@@ -139,7 +153,12 @@ const onReward = (isTest: boolean) => {
   form.value.rewardError = false;
   form.value.isFinished = !isTest;
 };
-const lottery = (pool: string[]): string => {
+const lottery = (pool: string[], isTest: boolean): string => {
+  const secretSize = secretObject.value.targetMap.size;
+  if (secretSize > 0 && secretSize < pool.length && !isTest) {
+    pool = pool.filter((t) => !secretObject.value.targetMap.get(t));
+  }
+
   const min = Math.ceil(0);
   const max = Math.floor(pool.length - 1);
   const result = Math.floor(Math.random() * (max - min + 1) + min);
@@ -156,5 +175,8 @@ export default () => {
 
     reset,
     onReward,
+
+    secretObject,
+    onSecretDialogOpen,
   };
 };

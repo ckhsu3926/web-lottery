@@ -7,6 +7,7 @@
         color="primary"
         class="absolute-top-right cursor-pointer"
         style="margin-top: 10px; margin-right: 40px"
+        @click="onSecretDialogOpen"
       />
       <q-icon
         name="o_cancel"
@@ -56,10 +57,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import adStore from 'stores/ad';
+import drawStore from 'stores/draw';
 
 export default defineComponent({
   setup() {
     const { config } = adStore();
+    const { onSecretDialogOpen } = drawStore();
 
     const onAdClick = () => {
       window.open(config.href);
@@ -67,7 +70,7 @@ export default defineComponent({
       return;
     };
 
-    return { config, onAdClick };
+    return { config, onAdClick, onSecretDialogOpen };
   },
 });
 </script>

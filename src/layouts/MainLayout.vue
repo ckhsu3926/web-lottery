@@ -15,6 +15,8 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <SecretBox />
   </q-layout>
 </template>
 
@@ -29,9 +31,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import AdArea from 'components/AdArea.vue';
+import SecretBox from 'components/fixed/SecretBox.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { AdArea },
+  components: { AdArea, SecretBox },
 });
 </script>
