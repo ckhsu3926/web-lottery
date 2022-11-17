@@ -130,9 +130,7 @@ const onReward = (isTest: boolean) => {
 
   form.value.rewarding = false;
   form.value.rewardError = false;
-  if (!isTest) {
-    form.value.isFinished = true;
-  }
+  form.value.isFinished = !isTest;
 };
 const lottery = (pool: string[]): string => {
   const min = Math.ceil(0);
