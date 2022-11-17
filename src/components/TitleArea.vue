@@ -7,12 +7,7 @@
       <q-icon name="redeem" class="q-mr-sm" color="primary" />
       <strong>抽獎主題 :</strong>
     </h4>
-    <q-input
-      outlined
-      bg-color="white"
-      :disable="form.isFinished"
-      v-model="form.title"
-    />
+    <q-input outlined bg-color="white" v-model="form.title" />
   </div>
 </template>
 

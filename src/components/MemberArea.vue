@@ -10,7 +10,6 @@
         size="md"
         style="width: 120px"
         class="q-ml-xl"
-        :disable="form.isFinished"
         @click="generateMember"
       >
         <strong>產生名單編號</strong>
@@ -41,7 +40,6 @@
       bg-color="white"
       type="textarea"
       rows="10"
-      :disable="form.isFinished"
       v-model="form.member"
     />
 
@@ -59,7 +57,6 @@
         color="primary"
         size="lg"
         style="width: 130px"
-        :disable="form.isFinished"
         @click="onReward(true)"
       >
         <strong>試抽</strong>
@@ -70,7 +67,6 @@
         color="primary"
         size="lg"
         style="width: 130px"
-        :disable="form.isFinished"
         @click="onReward(false)"
       >
         <strong>抽獎</strong>

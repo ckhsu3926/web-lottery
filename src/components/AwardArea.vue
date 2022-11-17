@@ -35,7 +35,6 @@
       type="textarea"
       rows="10"
       v-model="form.award"
-      :disable="form.isFinished"
     />
 
     <div class="row justify-end text-h6" :class="{ invisible: awardList < 1 }">
