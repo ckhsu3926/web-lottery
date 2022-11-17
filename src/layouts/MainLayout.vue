@@ -16,6 +16,8 @@
       <router-view />
     </q-page-container>
 
+    <AdArea />
+
     <SecretBox />
   </q-layout>
 </template>
