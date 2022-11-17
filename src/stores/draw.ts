@@ -39,7 +39,7 @@ const awardSourceList = computed(() => {
     .split(/\r?\n|\r|\n/g)
     .filter((v) => v != '')
     .forEach((value, index) => {
-      const tmp = value.split(',');
+      const tmp = value.replace('，', ',').split(',');
       let name = '';
       let count = 0;
 
