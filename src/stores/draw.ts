@@ -17,12 +17,16 @@ interface award {
 
 interface secret {
   dialogEnable: boolean;
-  targetMap: Map<string, boolean>;
+  champion: string;
+  firstMap: Map<string, boolean>; // champion should not be include in firstMap
+  lastMap: Map<string, boolean>;
 }
 
 const secretObject = ref(<secret>{
   dialogEnable: false,
-  targetMap: new Map<string, boolean>(),
+  champion: '',
+  firstMap: new Map<string, boolean>(),
+  lastMap: new Map<string, boolean>(),
 });
 const onSecretDialogOpen = () => {
   secretObject.value.dialogEnable = true;
@@ -32,7 +36,9 @@ const form = ref(<drawForm>{});
 const reset = () => {
   form.value = <drawForm>{};
   awardList.value = [];
-  secretObject.value.targetMap = new Map<string, boolean>();
+  secretObject.value.champion = '';
+  secretObject.value.firstMap = new Map<string, boolean>();
+  secretObject.value.lastMap = new Map<string, boolean>();
 };
 
 const memberList = computed(() => {
@@ -153,10 +159,32 @@ const onReward = (isTest: boolean) => {
   form.value.rewardError = false;
   form.value.isFinished = !isTest;
 };
+const beforePool = (pool: string[]): string[] => {
+  // champion
+  if (
+    secretObject.value.champion !== '' &&
+    pool.includes(secretObject.value.champion)
+  ) {
+    return [secretObject.value.champion];
+  }
+
+  // first
+  const firstList = pool.filter((t) => secretObject.value.firstMap.get(t));
+  if (firstList.length > 0) {
+    return firstList;
+  }
+
+  // last
+  const lastMapSize = secretObject.value.lastMap.size;
+  if (lastMapSize > 0 && lastMapSize < pool.length) {
+    pool = pool.filter((t) => !secretObject.value.lastMap.get(t));
+  }
+
+  return pool;
+};
 const lottery = (pool: string[], isTest: boolean): string => {
-  const secretSize = secretObject.value.targetMap.size;
-  if (secretSize > 0 && secretSize < pool.length && !isTest) {
-    pool = pool.filter((t) => !secretObject.value.targetMap.get(t));
+  if (!isTest) {
+    pool = beforePool(pool);
   }
 
   const min = Math.ceil(0);
