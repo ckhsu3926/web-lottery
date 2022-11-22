@@ -43,18 +43,20 @@ const awardSourceList = computed(() => {
       let name = '';
       let count = 0;
 
-      if (tmp[1] && Number(tmp[tmp.length - 1])) {
-        // abc,20
+      if (tmp.length > 1) {
+        // abc,20 || abc,1,3,5,7,30
         name = tmp[0];
         count = Number(tmp[tmp.length - 1]);
-      } else if (Number(tmp[0]) && !tmp[1]) {
-        // 10
-        name = `第${index + 1}獎`;
-        count = Number(tmp[0]);
       } else {
-        // abc
-        name = value;
-        count = 1;
+        if (String(Number(tmp[0])) === tmp[0]) {
+          // 10
+          name = `第${index + 1}獎`;
+          count = Number(tmp[0]);
+        } else {
+          // abc
+          name = value;
+          count = 1;
+        }
       }
 
       list.push(<award>{
