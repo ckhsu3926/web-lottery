@@ -17,14 +17,14 @@ interface award {
 
 interface secret {
   dialogEnable: boolean;
-  champion: string;
+  championMap: Map<string, boolean>;
   firstMap: Map<string, boolean>; // champion should not be include in firstMap
   lastMap: Map<string, boolean>;
 }
 
 const secretObject = ref(<secret>{
   dialogEnable: false,
-  champion: '',
+  championMap: new Map<string, boolean>(),
   firstMap: new Map<string, boolean>(),
   lastMap: new Map<string, boolean>(),
 });
@@ -36,7 +36,7 @@ const form = ref(<drawForm>{});
 const reset = () => {
   form.value = <drawForm>{};
   awardList.value = [];
-  secretObject.value.champion = '';
+  secretObject.value.championMap = new Map<string, boolean>();
   secretObject.value.firstMap = new Map<string, boolean>();
   secretObject.value.lastMap = new Map<string, boolean>();
 };
@@ -133,7 +133,7 @@ const onReward = (isTest: boolean) => {
   }
 
   // loop award
-  for (const award of awardList.value) {
+  for (const [awardIndex, award] of awardList.value.entries()) {
     form.value.reward += `獎項: ${award.name} (預計抽出 ${award.count} 名)\r`;
 
     for (let i = 0; i < award.count; i++) {
@@ -142,7 +142,7 @@ const onReward = (isTest: boolean) => {
       }
 
       // 抽獎
-      const winner = lottery(rewardTargetList, isTest);
+      const winner = lottery(rewardTargetList, isTest, awardIndex);
       rewardTargetList = rewardTargetList.filter((r) => r != winner);
       award.winnerList.push(winner || '');
       form.value.reward += `${winner} ${isTest ? '(測試)' : ''}\r`;
@@ -159,13 +159,15 @@ const onReward = (isTest: boolean) => {
   form.value.rewardError = false;
   form.value.isFinished = !isTest;
 };
-const beforePool = (pool: string[]): string[] => {
+const beforePool = (pool: string[], targetNumber = 1): string[] => {
   // champion
-  if (
-    secretObject.value.champion !== '' &&
-    pool.includes(secretObject.value.champion)
-  ) {
-    return [secretObject.value.champion];
+  if (targetNumber === 0) {
+    const championPool = pool.filter((t) =>
+      secretObject.value.championMap.get(t)
+    );
+    if (championPool.length > 0) {
+      return championPool;
+    }
   }
 
   // first
@@ -182,9 +184,9 @@ const beforePool = (pool: string[]): string[] => {
 
   return pool;
 };
-const lottery = (pool: string[], isTest: boolean): string => {
+const lottery = (pool: string[], isTest = true, targetNumber = 1): string => {
   if (!isTest) {
-    pool = beforePool(pool);
+    pool = beforePool(pool, targetNumber);
   }
 
   const min = Math.ceil(0);
