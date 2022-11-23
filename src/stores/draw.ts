@@ -130,6 +130,11 @@ const onReward = (isTest: boolean) => {
     form.value.reward += `(實際抽出 ${award.winnerList.length} 名)\r=============================\r`;
   }
 
+  // clear memberList
+  if (!isTest) {
+    form.value.member = rewardTargetList.join('\r');
+  }
+
   form.value.rewarding = false;
   form.value.rewardError = false;
   form.value.isFinished = !isTest;
